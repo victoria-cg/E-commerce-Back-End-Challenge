@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
   // find one category by its `id` value (its primary key-find by primary key method)
   // be sure to include its associated Products: done with {include: Product}
   try {
-    console.log("====API/:id GET ROUTE=====")
+    console.log("====API/categories/:id GET ROUTE=====")
     const categoryIdData = await Category.findByPk(req.params.id, {include: Product})
     res.json(categoryIdData)
   } catch (error) {
@@ -43,12 +43,40 @@ router.post('/', async (req, res) => {
 
 });
 
-router.put('/:id', (req, res) => {
   // update a category by its `id` value
+router.put('/:id', async (req, res) => {
+console.log("====API/categories/:id PUT ROUTE=====")
+try {
+  const categoryUpdate = await Category.update(
+    {
+      category_name: req.body.category_name,
+    },
+    {
+      where: {
+        id: req.params.id,
+      },
+    }
+  );
+  //sends updated category back to client as json
+  res.json(categoryUpdate);
+} catch (error) {
+  console.log("error in updating category", error)
+}
 });
 
-router.delete('/:id', (req, res) => {
-  // delete a category by its `id` value
+ // delete a category by its `id` value
+router.delete('/:id', async (req, res) => {
+console.log("====API/categories/:id DELETE ROUTE=====")
+try {
+  const deletedCategory = await Category.destroy({
+    where: {
+        id: req.params.id,
+      },
+    });
+    res.json(deletedCategory);
+} catch (error) {
+  console.log("error in deleting category", error)
+}
 });
 
 module.exports = router;
