@@ -8,8 +8,8 @@ router.get('/', async (req, res) => {
     console.log("================/API/CATEGORIES GET ROUTE =====================")
     
       // find all categories
-      // be sure to include its associated Products: done with
-    const categoryData = await Category.findAll({model: Product})
+      // be sure to include its associated Products: done with 'include: Product'
+    const categoryData = await Category.findAll({include: Product});
      console.log(categoryData)
      res.json(categoryData)
   } catch (error) {

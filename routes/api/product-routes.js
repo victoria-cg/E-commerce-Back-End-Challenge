@@ -4,18 +4,57 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 // The `/api/products` endpoint
 
 // get all products
-router.get('/', (req, res) => {
-  // find all products
-  // be sure to include its associated Category and Tag data
+// find all products
+// be sure to include its associated Category and Tag data: done with 'include' block: need to specify a category through relationship?
+router.get('/', async (req, res) => {
+  try {
+    console.log("================/API/PRODUCTS GET ROUTE =====================")
+    const productData = await Product.findAll({
+      include: [
+        {
+          model: Category,
+        },
+        {
+          model: Tag,
+        },
+        {
+          model: ProductTag,
+        },
+      ],
+    });
+    res.json(productData)
+  } catch (error) {
+    console.log("error when getting all products", error);
+  }
 });
 
 // get one product
-router.get('/:id', (req, res) => {
-  // find a single product by its `id`
+ // find a single product by its `id`
   // be sure to include its associated Category and Tag data
+router.get('/:id', async (req, res) => {
+ try {
+  console.log("====API/products/:id GET ROUTE=====");
+  const productIdData = await Product.findByPk(req.params.id,{
+    include: [
+      {
+        model: Category,
+      },
+      {
+        model: Tag,
+      },
+      {
+        model: ProductTag,
+      },
+    ], 
+  } );
+  res.json(productIdData);
+ } catch (error) {
+  console.log("error in getting product by id", error);
+ }
 });
 
 // create new product
+//this post route code was already provided in the starter code for the assignment, which is why it doesn't match the async formatting added in my personal code -VG
 router.post('/', (req, res) => {
   /* req.body should look like this...
     {
@@ -48,6 +87,7 @@ router.post('/', (req, res) => {
 });
 
 // update product
+//this put route was also part of the starter code for the asignment -VG
 router.put('/:id', (req, res) => {
   // update product data
   Product.update(req.body, {
@@ -92,8 +132,19 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
-  // delete one product by its `id` value
+ // delete one product by its `id` value
+router.delete('/:id', async (req, res) => {
+ console.log("====API/products/:id DELETE ROUTE=====")
+ try{
+  const deletedProduct = await Product.destroy({
+    where: {
+        id: req.params.id,
+      },
+    });
+    res.json(deletedProduct);
+ } catch (error) {
+  console.log("error in deleting product", error)
+ }
 });
 
 module.exports = router;
