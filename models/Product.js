@@ -37,11 +37,12 @@ Product.init(
     },
     category_id: {
       type: DataTypes.INTEGER,
-      //references the 'category' model's id property in category.js 
+      //references the 'category' model's id property in category.js, it is a foreign key
       references: {
         model: 'category',
         key: 'id'
-      }
+      },
+      onDelete: 'SET NULL',
     }
   },
   {
